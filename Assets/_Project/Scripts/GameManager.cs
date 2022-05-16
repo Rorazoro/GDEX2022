@@ -8,6 +8,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     [Header("Prefabs")]
     public GameObject playerPrefab;
     public GameObject playerCmCamPrefab;
+    public Material[] playerMaterials;
     
     [Header("References")]
     public GameObject localPlayer;

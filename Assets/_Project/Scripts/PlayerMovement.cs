@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Project.Scripts
 {
-    [RequireComponent(typeof(Player))]
+    [RequireComponent(typeof(PlayerObject))]
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PlayerInputHandler))]
@@ -28,10 +28,11 @@ namespace _Project.Scripts
         public float jumpHorizontalSpeed;
         public float jumpButtonGracePeriod;
         public float animationLayerSmoothTime;
+        public float pushPower;
         
         private const float Threshold = 0.01f;
 
-        private Player _player;
+        private PlayerObject _player;
         private Animator _animator;
         private CharacterController _characterController;
         private PlayerInputHandler _inputHandler;
@@ -46,7 +47,7 @@ namespace _Project.Scripts
 
         private void Awake()
         {
-            _player = GetComponent<Player>();
+            _player = GetComponent<PlayerObject>();
             _animator = GetComponent<Animator>();
             _characterController = GetComponent<CharacterController>();
             _inputHandler = GetComponent<PlayerInputHandler>();
@@ -174,6 +175,23 @@ namespace _Project.Scripts
             _velocity = movementDirection * (inputMagnatude * jumpHorizontalSpeed);
         }
 
+        private void OnControllerColliderHit (ControllerColliderHit hit) {
+            Rigidbody targetrb = hit.collider.attachedRigidbody;
+
+            //no rigidbody
+            if (targetrb == null || targetrb.isKinematic) {
+                return;
+            }
+            //We don't want to push objects below us
+            // if (hit.moveDirection.y < -0.3) {
+            //     return;
+            // }
+
+            //Get push direction
+            Vector3 pushDir = new Vector3 (hit.moveDirection.x, 0, hit.moveDirection.z);
+            targetrb.velocity = pushDir * pushPower;
+        }
+        
         // private void SetLayerWeightSmooth(int layerIndex, float layerWeight)
         // {
         //     float currWeight = _animator.GetLayerWeight(layerIndex);

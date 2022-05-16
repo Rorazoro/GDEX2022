@@ -1618,10 +1618,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98cdec61fe614306b6797b4da28239ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerIndex: 0
   playerCamera: {fileID: 0}
   cameraCinemachine: {fileID: 0}
-  followTarget: {fileID: 6671263205440876805}
   playerModel: {fileID: 6258516795503413699}
+  playerModelSurface: {fileID: 1081079536442059600}
+  playerModelJoints: {fileID: 7254106748266019776}
+  followTarget: {fileID: 6671263205440876805}
 --- !u!114 &6671263206652870483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1762,6 +1765,7 @@ MonoBehaviour:
   jumpHorizontalSpeed: 3
   jumpButtonGracePeriod: 0.2
   animationLayerSmoothTime: 0.2
+  pushPower: 10
 --- !u!114 &578744514979981864
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,8 @@
-﻿using Cinemachine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cinemachine;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace _Project.Scripts
@@ -17,17 +20,20 @@ namespace _Project.Scripts
         public GameObject playerModel;
         public GameObject playerModelSurface;
         public GameObject playerModelJoints;
+
+        [Header("UI")] 
+        public InGameUIManager UIManager;
         
         [SerializeField]
         private Transform followTarget;
 
         private void Start()
         {
-            PlayerIndex = photonView.OwnerActorNr - 1;
+            UpdatePlayerIndex();
             SetPlayerColor();
             
             if (!photonView.IsMine) return;
-
+            
             playerModel.SetActive(false);
             LoadCamera();
         }
@@ -46,6 +52,19 @@ namespace _Project.Scripts
             {
                 renderer.material = GameManager.Instance.playerMaterials[PlayerIndex];
             }
+        }
+
+        [PunRPC]
+        public void AddPlayerToPlayerList(Player newPlayer) => UIManager.AddPlayerToPlayerList(newPlayer);
+        
+        [PunRPC]
+        public void RemovePlayerFromPlayerList(Player otherPlayer) => UIManager.RemovePlayerFromPlayerList(otherPlayer);
+
+        [PunRPC]
+        public void UpdatePlayerIndex()
+        {
+            List<Player> players = PhotonNetwork.PlayerList.ToList();
+            PlayerIndex = players.FindIndex(x => x.ActorNumber == photonView.OwnerActorNr);
         }
     }
 }

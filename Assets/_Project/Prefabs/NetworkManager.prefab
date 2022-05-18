@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1061933688746813031}
   - component: {fileID: 1061933688746813030}
-  - component: {fileID: 1061933688746813028}
+  - component: {fileID: 5202602804834111798}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1061933688746813030
 MonoBehaviour:
@@ -45,13 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f978303aa2dda94fb0da26f2cf3df00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 0}
-  playerCmCamPrefab: {fileID: 0}
-  playerMaterials: []
-  localPlayer: {fileID: 0}
   gameVersion: 0.1.0
-  spawnPosition: {x: 0, y: 0, z: 0}
---- !u!114 &1061933688746813028
+--- !u!114 &5202602804834111798
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

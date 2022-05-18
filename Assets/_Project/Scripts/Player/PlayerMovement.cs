@@ -56,7 +56,7 @@ namespace _Project.Scripts
 
         private void Update()
         {
-            if (!photonView.IsMine)
+            if (!photonView.IsMine && PhotonNetwork.IsConnected)
                 return;
 
             Jump();
@@ -64,7 +64,7 @@ namespace _Project.Scripts
 
         private void FixedUpdate()
         {
-            if (!photonView.IsMine)
+            if (!photonView.IsMine && PhotonNetwork.IsConnected)
                 return;
 
             Move();
@@ -155,11 +155,15 @@ namespace _Project.Scripts
                 movementDirection.Normalize();
             }
 
-            var toRotation = Quaternion.LookRotation(_player.playerCamera.transform.forward);
-            toRotation.x = 0f;
-            toRotation.z = 0f;
-            transform.rotation =
-                Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            Camera playerCamera = _player.playerCamera;
+            if (playerCamera != null)
+            {
+                var toRotation = Quaternion.LookRotation(_player.playerCamera.transform.forward);
+                toRotation.x = 0f;
+                toRotation.z = 0f;
+                transform.rotation =
+                    Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            }
             
             if (movementDirection != Vector3.zero)
             {

@@ -3,22 +3,14 @@ using _Project.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NetworkManager : NetworkSingletonBehaviour<NetworkManager>
 {
-    [Header("Prefabs")]
-    public GameObject playerPrefab;
-    public GameObject playerCmCamPrefab;
-    public Material[] playerMaterials;
-    
-    [Header("References")]
-    public GameObject localPlayer;
-    
     [SerializeField] private string gameVersion = "0.1.0";
-    [SerializeField] private Vector3 spawnPosition;
-    
+
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
+
+    private Dictionary<int, Player> playerList = new Dictionary<int, Player>();
     
     private void Start()
     {
@@ -45,8 +37,29 @@ public class NetworkManager : NetworkSingletonBehaviour<NetworkManager>
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("RoomScene");
-        PhotonView pv = PhotonView.Get(localPlayer);
-        pv.RPC("AddPlayerToPlayerList", RpcTarget.AllBuffered, PhotonNetwork.NickName);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log($"Player joined: {newPlayer.NickName}");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonView pv = PhotonView.Get(GameManager.Instance.localPlayer);
+            pv.RPC("AddPlayerToPlayerList", RpcTarget.All, newPlayer);
+            pv.RPC("UpdatePlayerIndex", RpcTarget.All);
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log($"Player left: {otherPlayer.NickName}");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonView pv = PhotonView.Get(GameManager.Instance.localPlayer);
+            pv.RPC("RemovePlayerFromPlayerList", RpcTarget.AllBuffered, otherPlayer);
+            pv.RPC("UpdatePlayerIndex", RpcTarget.All);
+            PhotonNetwork.DestroyPlayerObjects(otherPlayer);
+        }
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -54,11 +67,11 @@ public class NetworkManager : NetworkSingletonBehaviour<NetworkManager>
         UpdateCachedRoomList(roomList);
     }
 
-    public override void OnLeftRoom()
-    {
-        PhotonView pv = PhotonView.Get(localPlayer);
-        pv.RPC("RemovePlayerFromPlayerList", RpcTarget.OthersBuffered, PhotonNetwork.NickName);
-    }
+    // public override void OnLeftRoom()
+    // {
+    //     PhotonView pv = PhotonView.Get(localPlayer);
+    //     pv.RPC("RemovePlayerFromPlayerList", RpcTarget.OthersBuffered, PhotonNetwork.NickName);
+    // }
 
     public override void OnLeftLobby()
     {
@@ -114,29 +127,6 @@ public class NetworkManager : NetworkSingletonBehaviour<NetworkManager>
             {
                 cachedRoomList[info.Name] = info;
             }
-        }
-    }
-    
-    private void InstantiateLocalPlayer()
-    {
-        if (localPlayer == null)
-        {
-            Debug.Log("Instantiating LocalPlayer");
-            Quaternion spawnRotation = Quaternion.identity;
-
-            localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, spawnRotation);
-
-            PhotonNetwork.LocalPlayer.TagObject = localPlayer;
-            foreach (var t in PhotonNetwork.PlayerList)
-            {
-                GameObject p = t.TagObject as GameObject;
-                // if (p != null)
-                //     p.BroadcastMessage("NetworkNotice", $"{PhotonNetwork.LocalPlayer.NickName} has joined the game!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Unable to instantiate LocalPlayer");
         }
     }
 }

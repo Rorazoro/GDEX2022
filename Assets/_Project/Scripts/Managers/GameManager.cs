@@ -12,8 +12,7 @@ public class GameManager : NetworkSingletonBehaviour<GameManager>
     
     [Header("References")]
     public GameObject localPlayer;
-
-    [SerializeField] private string gameVersion = "0.1.0";
+    
     [SerializeField] private Vector3 spawnPosition;
  
     private void Start()
@@ -22,11 +21,13 @@ public class GameManager : NetworkSingletonBehaviour<GameManager>
         {
             InstantiateLocalPlayer();
         }
-        
-        Debug.LogWarning("Photon Not Connected. Creating Dev.");
-        PhotonNetwork.NickName = "Dev";
-        PhotonNetwork.GameVersion = gameVersion;
-        PhotonNetwork.ConnectUsingSettings();
+        else
+        {
+            Debug.LogWarning("Photon Not Connected. Creating Dev.");
+            PhotonNetwork.NickName = "Dev";
+            PhotonNetwork.GameVersion = "0.1.0";
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
     
     public override void OnConnectedToMaster()

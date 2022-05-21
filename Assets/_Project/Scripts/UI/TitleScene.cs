@@ -10,7 +10,7 @@ public class TitleScene : MonoBehaviour
     
     public void BtnMultiplayer_OnClick()
     {
-        SceneManager.LoadScene("LobbyScene");
+        SceneManager.LoadScene("ConnectToServerScene");
     }
     
     public void BtnQuit_OnClick()

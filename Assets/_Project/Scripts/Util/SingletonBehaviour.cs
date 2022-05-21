@@ -60,9 +60,9 @@ namespace _Project.Scripts
         }
  
  
-        private void OnDestroy()
-        {
-            m_ShuttingDown = true;
-        }
+        // private void OnDestroy()
+        // {
+        //     m_ShuttingDown = true;
+        // }
     }
 }

@@ -1,70 +1,102 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Cinemachine;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Project.Scripts
 {
-    public class PlayerObject : MonoBehaviourPun
+    public class PlayerObject : MonoBehaviourPunCallbacks
     {
-        [Header("Player")] 
-        public int PlayerIndex;
-        
+        [SerializeField] private PlayerInputHandler InputHandler;
+        [SerializeField] private Transform followTarget;
+
         [Header("Camera")] 
         public Camera playerCamera;
+        public GameObject PlayerCMCamPrefab;
         public CinemachineVirtualCamera cameraCinemachine;
 
-        [Header("Model")]
+        [Header("Model")] 
         public GameObject playerModel;
         public GameObject playerModelSurface;
-        public GameObject playerModelJoints;
+        public Color[] PlayerModelColors;
 
         [Header("UI")] 
-        public InGameUIManager UIManager;
-        
-        [SerializeField]
-        private Transform followTarget;
+        public GameObject Canvas;
+        public GameObject InGameUIPanel;
 
         private void Start()
         {
-            UpdatePlayerIndex();
-            SetPlayerColor();
-            
+            SetPlayerModelColor();
+
             if (!photonView.IsMine) return;
             
             playerModel.SetActive(false);
             LoadCamera();
+            Canvas.SetActive(true);
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+
+        private void Update()
+        {
+            if (!photonView.IsMine)
+                return;
+
+            if (InputHandler.playerActionMap.InGameMenu)
+            {
+                cameraCinemachine.GetComponent<CinemachineInputProvider>().enabled = false;
+                InputHandler.SwitchActionMap("ui");
+                ToggleInGameMenu(true);
+            }
+
+            if (InputHandler.uiActionMap.Cancel)
+            {
+                cameraCinemachine.GetComponent<CinemachineInputProvider>().enabled = true;
+                InputHandler.SwitchActionMap("player");
+                ToggleInGameMenu(false);
+            }
+        }
+
+        public void BtnReturnToTitle_OnClick()
+        {
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("TitleScene");
+        }
+        
+        public void BtnQuit_OnClick()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            Application.Quit();
         }
         
         private void LoadCamera()
         {
             playerCamera = Camera.main;
-            cameraCinemachine = Instantiate(GameManager.Instance.playerCmCamPrefab, Vector3.zero, Quaternion.identity).GetComponent<CinemachineVirtualCamera>();
+            cameraCinemachine = Instantiate(PlayerCMCamPrefab, Vector3.zero, Quaternion.identity)
+                .GetComponent<CinemachineVirtualCamera>();
             cameraCinemachine.Follow = followTarget;
         }
-        
-        private void SetPlayerColor()
+
+        private void SetPlayerModelColor()
         {
+            int index = PhotonNetwork.CurrentRoom.Players.OrderBy(x => x.Key).ToList()
+                .FindIndex(x => x.Value.ActorNumber == photonView.Owner.ActorNumber);
+
+            Debug.Log($"{index} - {photonView.Owner.NickName}");
+
+            Color playerModelColor = PlayerModelColors[index];
             var renderer = playerModelSurface.GetComponent<Renderer>();
-            if (PlayerIndex < GameManager.Instance.playerMaterials.Length)
-            {
-                renderer.material = GameManager.Instance.playerMaterials[PlayerIndex];
-            }
+            renderer.material.color = playerModelColor;
         }
 
-        [PunRPC]
-        public void AddPlayerToPlayerList(Player newPlayer) => UIManager.AddPlayerToPlayerList(newPlayer);
-        
-        [PunRPC]
-        public void RemovePlayerFromPlayerList(Player otherPlayer) => UIManager.RemovePlayerFromPlayerList(otherPlayer);
-
-        [PunRPC]
-        public void UpdatePlayerIndex()
+        private void ToggleInGameMenu(bool active)
         {
-            List<Player> players = PhotonNetwork.PlayerList.ToList();
-            PlayerIndex = players.FindIndex(x => x.ActorNumber == photonView.OwnerActorNr);
+            InGameUIPanel.SetActive(active);
+            Cursor.visible = active;
+            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Confined;
         }
     }
 }

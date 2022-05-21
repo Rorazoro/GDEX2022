@@ -9,13 +9,16 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/TitleScene.unity
     guid: dbaa7e46e788fc440a5658911f5d9493
   - enabled: 1
+    path: Assets/_Project/Scenes/ConnectToServerScene.unity
+    guid: ecb657eef611b3944a46e53549b29794
+  - enabled: 1
     path: Assets/_Project/Scenes/LobbyScene.unity
     guid: 69b4c8fbe2d6af44fb5ed1cfb1034eb7
   - enabled: 1
-    path: Assets/_Project/Scenes/RoomScene.unity
-    guid: 892fd849400329f49ba45d73fd3f3c8f
-  - enabled: 1
     path: Assets/_Project/Scenes/NetworkingTest.unity
     guid: 34a9577edfeb3f842b633c7f70881abf
+  - enabled: 1
+    path: Assets/_Project/Scenes/Level1Scene.unity
+    guid: d56d57ce88fddd44bbfa3d08cb6bea34
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: e5874e30895106649bbbe210518150c5, type: 2}

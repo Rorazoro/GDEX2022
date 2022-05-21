@@ -1,83 +1,147 @@
 using System.Collections.Generic;
-using _Project.Scripts;
+using System.Linq;
+using _Project.Scripts.UI;
+using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class LobbyManager : SingletonBehaviour<LobbyManager>
+public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    public GameObject[] UIPanels;
+    public TMP_InputField RoomInputField;
+    public GameObject LobbyPanel;
+    public GameObject RoomPanel;
+    public TMP_Text RoomName;
+    
+    public RoomItem RoomItemPrefab;
+    private List<RoomItem> roomItemsList = new List<RoomItem>();
+    public Transform RoomItemListParent;
+    
+    public List<PlayerItem> PlayerItemsList = new List<PlayerItem>();
+    public PlayerItem PlayerItemPrefab;
+    public Transform PlayerItemsListParent;
+    public GameObject PlayButton;
 
-    [SerializeField] private GameObject HostListContent;
-    [SerializeField] private GameObject RoomPanelPrefab;
-    [SerializeField] private Button BtnJoinRoom;
-    [SerializeField] private string SelectedRoomName;
+    public float timeBetweenUpdates = 1.5f;
+    private float nextUpdateTime;
 
-    public void BtnNameEnter_OnClick(TMP_InputField txtName)
+    private void Start()
     {
-        NetworkManager.Instance.SetPlayerName(txtName.text);
-        NetworkManager.Instance.JoinDefaultLobby();
-        SwitchUIPanels(1);
+        PhotonNetwork.JoinLobby();
     }
 
+    private void Update()
+    {
+        PlayButton.SetActive(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2);
+    }
+
+    public void BtnCreateRoom_OnClick()
+    {
+        if (RoomInputField.text.Length >= 1)
+        {
+            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions
+            {
+                MaxPlayers = 4
+            });
+        }
+    }
+    
     public void BtnReturn_OnClick()
     {
+        PhotonNetwork.Disconnect();
         SceneManager.LoadScene("TitleScene");
     }
 
-    public void BtnHost_OnClick()
+    public void BtnLeaveRoom_OnClick()
     {
-        SwitchUIPanels(2);
-    }
-    
-    public void BtnJoin_OnClick()
-    {
-        SwitchUIPanels(3);
-        PopulateHostList();
-    }
-    
-    public void BtnGoBack_OnClick(int uiPanelIndex)
-    {
-        SwitchUIPanels(uiPanelIndex);
+        PhotonNetwork.LeaveRoom();
     }
 
-    public void BtnHostEnter_OnClick(TMP_InputField txtHostName)
+    public void BtnPlay_OnClick()
     {
-        NetworkManager.Instance.CreateHost(txtHostName.text, "");
+        PhotonNetwork.LoadLevel("Level1Scene");
     }
     
-    public void BtnJoinRoom_OnClick()
+    public override void OnConnectedToMaster()
     {
-        NetworkManager.Instance.JoinHost(SelectedRoomName);
-    }
-
-    public void SetSelectedRoomName(string roomName)
-    {
-        SelectedRoomName = roomName;
-        if (!BtnJoinRoom.interactable)
-        {
-            BtnJoinRoom.interactable = true;
-        }
+        PhotonNetwork.JoinLobby();
     }
     
-    private void SwitchUIPanels(int uiPanelIndex)
+    public override void OnJoinedRoom()
     {
-        foreach (var uiPanel in UIPanels)
+        LobbyPanel.SetActive(false); 
+        RoomPanel.SetActive(true);
+        RoomName.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+        UpdatePlayerList();
+    }
+
+    public override void OnLeftRoom()
+    {
+        LobbyPanel.SetActive(true); 
+        RoomPanel.SetActive(false);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        UpdatePlayerList();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UpdatePlayerList();
+    }
+
+    public void JoinRoom(string roomName)
+    {
+        PhotonNetwork.JoinRoom(roomName);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        if (Time.time >= nextUpdateTime)
         {
-            uiPanel.SetActive(uiPanel == UIPanels[uiPanelIndex]);
+            UpdateRoomList(roomList);
+            nextUpdateTime = Time.time + timeBetweenUpdates;
         }
     }
 
-    private void PopulateHostList()
+    private void UpdateRoomList(List<RoomInfo> roomList)
     {
-        Dictionary<string, RoomInfo> roomList = NetworkManager.Instance.GetCachedRoomList();
-        foreach (var room in roomList)
+        foreach (RoomItem item in roomItemsList)
         {
-            GameObject roomPanel = Instantiate(RoomPanelPrefab, HostListContent.transform);
-            roomPanel.GetComponent<RoomPanel>().SetRoomInfo(room);
+            Destroy(item.gameObject);
         }
-        
+        roomItemsList.Clear();
+
+        foreach (RoomInfo room in roomList)
+        {
+            RoomItem newRoom = Instantiate(RoomItemPrefab, RoomItemListParent);
+            newRoom.SetRoomInfo(room.Name, room.PlayerCount, room.MaxPlayers);
+            roomItemsList.Add(newRoom);
+        }
+    }
+
+    private void UpdatePlayerList()
+    {
+        foreach (PlayerItem item in PlayerItemsList)
+        {
+            Destroy(item.gameObject);
+        }
+        PlayerItemsList.Clear();
+
+        if (PhotonNetwork.CurrentRoom == null)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players.OrderBy(x => x.Key))
+        {
+            int index = PhotonNetwork.CurrentRoom.Players.OrderBy(x => x.Key).ToList().IndexOf(player);
+            Debug.Log($"{index} - {player.Key} - {player.Value}");
+            PlayerItem newPlayerItem = Instantiate(PlayerItemPrefab, PlayerItemsListParent);
+            newPlayerItem.SetPlayerInfo(index, player.Value);
+            PlayerItemsList.Add(newPlayerItem);
+        }
     }
 }

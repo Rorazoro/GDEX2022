@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3336479680156564542
 MonoBehaviour:
@@ -46,10 +46,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 6671263206652870492, guid: afa381393bce9a0478326d1f9d502f47, type: 3}
   playerCmCamPrefab: {fileID: 6397263190975845539, guid: 73b3f59f5f934d641830078590f932d5, type: 3}
-  playerMaterials:
-  - {fileID: 2100000, guid: 7576dd5bd514eea4cae2de30ff6db841, type: 2}
-  - {fileID: 2100000, guid: ea02bc937e26c1b4094e6b802fcf425b, type: 2}
-  - {fileID: 2100000, guid: d59a3bedc3c36414f8d86b2073327297, type: 2}
-  - {fileID: 2100000, guid: cd48281ebe45a96409d8dd731840bca6, type: 2}
+  playerColors:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0.00578022, g: 0, b: 1, a: 1}
+  - {r: 0.036716342, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.9817687, b: 0, a: 1}
+  playerUIColors:
+  - {r: 1, g: 0.504, b: 0.504, a: 1}
+  - {r: 0.5039215, g: 0.5, b: 1, a: 1}
+  - {r: 0.5196078, g: 1, b: 0.5, a: 1}
+  - {r: 1, g: 0.99215686, b: 0.5, a: 1}
   localPlayer: {fileID: 0}
   spawnPosition: {x: 0, y: 0, z: 0}

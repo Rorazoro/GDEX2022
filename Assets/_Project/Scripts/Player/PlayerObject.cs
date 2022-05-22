@@ -65,7 +65,7 @@ namespace _Project.Scripts.Player
             LoadCamera();
             Canvas.SetActive(true);
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.Locked;
             
             startTime = Time.time;
         }
@@ -330,7 +330,7 @@ namespace _Project.Scripts.Player
             
             InGameMenuPanel.SetActive(active);
             Cursor.visible = active;
-            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Confined;
+            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
         }
     }
 }

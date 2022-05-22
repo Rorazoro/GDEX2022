@@ -1,23 +1,34 @@
+using Photon.Pun;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TitleScene : MonoBehaviour
+namespace _Project.Scripts.UI
 {
-    public void BtnSingleplayer_OnClick()
+    public class TitleScene : MonoBehaviour
     {
-        //SceneManager.LoadScene("LevelSelectScene");
-    }
-    
-    public void BtnMultiplayer_OnClick()
-    {
-        SceneManager.LoadScene("ConnectToServerScene");
-    }
-    
-    public void BtnQuit_OnClick()
-    {
+        public void BtnSingleplayer_OnClick()
+        {
+            PhotonNetwork.OfflineMode = true;
+            SceneManager.LoadScene("Level1Scene");
+        }
+
+        public void BtnMultiplayer_OnClick()
+        {
+            SceneManager.LoadScene("ConnectToServerScene");
+        }
+
+        public void BtnCredits_OnClick()
+        {
+            SceneManager.LoadScene("CreditsScene");
+        }
+
+        public void BtnQuit_OnClick()
+        {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
 #endif
-        Application.Quit();
+            Application.Quit();
+        }
     }
 }

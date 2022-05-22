@@ -1,8 +1,7 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 
-namespace _Project.Scripts
+namespace _Project.Scripts.Player
 {
     [RequireComponent(typeof(PlayerObject))]
     [RequireComponent(typeof(Animator))]
@@ -10,6 +9,7 @@ namespace _Project.Scripts
     [RequireComponent(typeof(PlayerInputHandler))]
     public class PlayerMovement : MonoBehaviourPun
     {
+        private const float Threshold = 0.01f;
         private static readonly int IsFalling = Animator.StringToHash("IsFalling");
         private static readonly int IsJumping = Animator.StringToHash("IsJumping");
         private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
@@ -17,6 +17,7 @@ namespace _Project.Scripts
         private static readonly int InputMagnatude = Animator.StringToHash("InputMagnitude");
         private static readonly int InputH = Animator.StringToHash("InputH");
         private static readonly int InputV = Animator.StringToHash("InputV");
+        private static readonly int MovementSpeed = Animator.StringToHash("MovementSpeed");
 
         [SerializeField] private Vector3 _velocity;
         [SerializeField] private float _rotationVelocity;
@@ -29,10 +30,6 @@ namespace _Project.Scripts
         public float jumpButtonGracePeriod;
         public float animationLayerSmoothTime;
         public float pushPower;
-        
-        private const float Threshold = 0.01f;
-
-        private PlayerObject _player;
         private Animator _animator;
         private CharacterController _characterController;
         private PlayerInputHandler _inputHandler;
@@ -41,9 +38,10 @@ namespace _Project.Scripts
         private float? _jumpButtonPressedTime;
         private float? _lastGroundedTime;
         private float _originalStepOffset;
-        private float _ySpeed;
+
+        private PlayerObject _player;
         private float _yAnimVelocity;
-        private static readonly int MovementSpeed = Animator.StringToHash("MovementSpeed");
+        private float _ySpeed;
 
         private void Awake()
         {
@@ -78,6 +76,22 @@ namespace _Project.Scripts
             _velocity.y = _ySpeed * Time.deltaTime;
 
             _characterController.Move(_velocity);
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            var targetrb = hit.collider.attachedRigidbody;
+
+            //no rigidbody
+            if (targetrb == null || targetrb.isKinematic) return;
+            //We don't want to push objects below us
+            // if (hit.moveDirection.y < -0.3) {
+            //     return;
+            // }
+
+            //Get push direction
+            var pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+            targetrb.velocity = pushDir * pushPower;
         }
 
         private void Jump()
@@ -146,7 +160,7 @@ namespace _Project.Scripts
             _animator.SetFloat(InputH, hInput, 0.05f, Time.deltaTime);
             _animator.SetFloat(InputV, vInput, 0.05f, Time.deltaTime);
             _animator.SetFloat(MovementSpeed, movementSpeed);
-            
+
             if (inputMagnatude > 0)
             {
                 movementDirection =
@@ -155,7 +169,7 @@ namespace _Project.Scripts
                 movementDirection.Normalize();
             }
 
-            Camera playerCamera = _player.playerCamera;
+            var playerCamera = _player.playerCamera;
             if (playerCamera != null)
             {
                 var toRotation = Quaternion.LookRotation(_player.playerCamera.transform.forward);
@@ -164,38 +178,17 @@ namespace _Project.Scripts
                 transform.rotation =
                     Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
             }
-            
+
             if (movementDirection != Vector3.zero)
-            {
                 _animator.SetBool(IsMoving, true);
-            }
             else
-            {
                 _animator.SetBool(IsMoving, false);
-            }
 
             if (_isGrounded) return;
-            
+
             _velocity = movementDirection * (inputMagnatude * jumpHorizontalSpeed);
         }
 
-        private void OnControllerColliderHit (ControllerColliderHit hit) {
-            Rigidbody targetrb = hit.collider.attachedRigidbody;
-
-            //no rigidbody
-            if (targetrb == null || targetrb.isKinematic) {
-                return;
-            }
-            //We don't want to push objects below us
-            // if (hit.moveDirection.y < -0.3) {
-            //     return;
-            // }
-
-            //Get push direction
-            Vector3 pushDir = new Vector3 (hit.moveDirection.x, 0, hit.moveDirection.z);
-            targetrb.velocity = pushDir * pushPower;
-        }
-        
         // private void SetLayerWeightSmooth(int layerIndex, float layerWeight)
         // {
         //     float currWeight = _animator.GetLayerWeight(layerIndex);

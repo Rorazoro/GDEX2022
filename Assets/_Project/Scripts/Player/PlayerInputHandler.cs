@@ -2,18 +2,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace _Project.Scripts
+namespace _Project.Scripts.Player
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInputHandler : MonoBehaviour
     {
-        private PlayerInput _playerInput;
-
         [SerializeField] private string currentActionMapName = "player";
 
         public bool enableDebugLogs;
         public PlayerActionMap playerActionMap;
         public UIActionMap uiActionMap;
+        private PlayerInput _playerInput;
 
         private void Awake()
         {
@@ -43,6 +42,26 @@ namespace _Project.Scripts
         {
             private const string actionMapName = "Player";
 
+            //Stored input actions values for Player Action Map. These are only used for viewing in the inspector.
+            [SerializeField] private Vector2 move;
+            [SerializeField] private Vector2 look;
+            [SerializeField] private bool sprint;
+            [SerializeField] private bool jump;
+            [SerializeField] private bool fire;
+            [SerializeField] private bool ready;
+            [SerializeField] private bool start;
+            [SerializeField] private bool inGameMenu;
+            protected InputAction FireAction;
+            protected InputAction InGameMenuAction;
+            protected InputAction JumpAction;
+            protected InputAction LookAction;
+
+            //Stored input actions for Player Action Map
+            protected InputAction MoveAction;
+            protected InputAction ReadyAction;
+            protected InputAction SprintAction;
+            protected InputAction StartAction;
+
             public PlayerActionMap(PlayerInput _playerInput)
             {
                 //Storing all input actions for Player Action Map
@@ -55,26 +74,6 @@ namespace _Project.Scripts
                 StartAction = _playerInput.actions[$"{actionMapName}/Start"];
                 InGameMenuAction = _playerInput.actions[$"{actionMapName}/InGameMenu"];
             }
-
-            //Stored input actions for Player Action Map
-            protected InputAction MoveAction;
-            protected InputAction LookAction;
-            protected InputAction SprintAction;
-            protected InputAction JumpAction;
-            protected InputAction FireAction;
-            protected InputAction ReadyAction;
-            protected InputAction StartAction;
-            protected InputAction InGameMenuAction;
-
-            //Stored input actions values for Player Action Map. These are only used for viewing in the inspector.
-            [SerializeField] private Vector2 move;
-            [SerializeField] private Vector2 look;
-            [SerializeField] private bool sprint;
-            [SerializeField] private bool jump;
-            [SerializeField] private bool fire;
-            [SerializeField] private bool ready;
-            [SerializeField] private bool start;
-            [SerializeField] private bool inGameMenu;
 
             //Accessors for input actions for Player Action Map
             public Vector2 Move
@@ -106,17 +105,17 @@ namespace _Project.Scripts
             {
                 get { return fire = FireAction.WasPressedThisFrame(); }
             }
-            
+
             public bool Ready
             {
                 get { return ready = ReadyAction.WasPressedThisFrame(); }
             }
-            
+
             public bool Start
             {
                 get { return start = StartAction.WasPressedThisFrame(); }
             }
-            
+
             public bool InGameMenu
             {
                 get { return inGameMenu = InGameMenuAction.WasPressedThisFrame(); }
@@ -127,6 +126,26 @@ namespace _Project.Scripts
         public class UIActionMap
         {
             private const string actionMapName = "UI";
+
+            //Stored input actions values for Player Action Map. These are only used for viewing in the inspector.
+            [SerializeField] private Vector2 navigate;
+            [SerializeField] private Vector2 point;
+            [SerializeField] private float scrollWheel;
+            [SerializeField] private bool submit;
+            [SerializeField] private bool cancel;
+            [SerializeField] private bool click;
+            [SerializeField] private bool middleClick;
+            [SerializeField] private bool rightClick;
+            protected InputAction CancelAction;
+            protected InputAction ClickAction;
+            protected InputAction MiddleClickAction;
+
+            //Stored input actions for UI Action Map
+            protected InputAction NavigateAction;
+            protected InputAction PointAction;
+            protected InputAction RightClickAction;
+            protected InputAction ScrollWheelAction;
+            protected InputAction SubmitAction;
 
             public UIActionMap(PlayerInput _playerInput)
             {
@@ -140,26 +159,6 @@ namespace _Project.Scripts
                 MiddleClickAction = _playerInput.actions[$"{actionMapName}/MiddleClick"];
                 RightClickAction = _playerInput.actions[$"{actionMapName}/RightClick"];
             }
-
-            //Stored input actions for UI Action Map
-            protected InputAction NavigateAction;
-            protected InputAction SubmitAction;
-            protected InputAction CancelAction;
-            protected InputAction PointAction;
-            protected InputAction ClickAction;
-            protected InputAction ScrollWheelAction;
-            protected InputAction MiddleClickAction;
-            protected InputAction RightClickAction;
-
-            //Stored input actions values for Player Action Map. These are only used for viewing in the inspector.
-            [SerializeField] Vector2 navigate;
-            [SerializeField] Vector2 point;
-            [SerializeField] float scrollWheel;
-            [SerializeField] bool submit;
-            [SerializeField] bool cancel;
-            [SerializeField] bool click;
-            [SerializeField] bool middleClick;
-            [SerializeField] bool rightClick;
 
             //Accessors for input actions for Player Action Map
             public Vector2 Navigate

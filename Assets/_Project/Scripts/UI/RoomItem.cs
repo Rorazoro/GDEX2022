@@ -1,26 +1,30 @@
+using _Project.Scripts.Managers;
 using TMPro;
 using UnityEngine;
 
-public class RoomItem : MonoBehaviour
+namespace _Project.Scripts.UI
 {
-    [SerializeField] private TMP_Text txtRoomName;
-    [SerializeField] private TMP_Text txtPlayerCount;
-
-    private LobbyManager manager;
-
-    private void Start()
+    public class RoomItem : MonoBehaviour
     {
-        manager = FindObjectOfType<LobbyManager>();
-    }
+        [SerializeField] private TMP_Text txtRoomName;
+        [SerializeField] private TMP_Text txtPlayerCount;
 
-    public void SetRoomInfo(string name, int playerCount, int maxPlayers)
-    {
-        txtRoomName.text = name;
-        txtPlayerCount.text = $"{playerCount} / {maxPlayers} Players";
-    }
+        private LobbyManager manager;
 
-    public void RoomItem_OnClick()
-    {
-        manager.JoinRoom(txtRoomName.text);
+        private void Start()
+        {
+            manager = FindObjectOfType<LobbyManager>();
+        }
+
+        public void SetRoomInfo(string name, int playerCount, int maxPlayers)
+        {
+            txtRoomName.text = name;
+            txtPlayerCount.text = $"{playerCount} / {maxPlayers} Players";
+        }
+
+        public void RoomItem_OnClick()
+        {
+            manager.JoinRoom(txtRoomName.text);
+        }
     }
 }

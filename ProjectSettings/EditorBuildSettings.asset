@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/TitleScene.unity
     guid: dbaa7e46e788fc440a5658911f5d9493
   - enabled: 1
+    path: Assets/_Project/Scenes/CreditsScene.unity
+    guid: c4813f26708b8094ebb4fe95025fe0f1
+  - enabled: 1
     path: Assets/_Project/Scenes/ConnectToServerScene.unity
     guid: ecb657eef611b3944a46e53549b29794
   - enabled: 1

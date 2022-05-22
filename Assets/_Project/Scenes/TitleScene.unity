@@ -155,7 +155,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 846876013}
-  m_Father: {fileID: 1074849097}
+  m_Father: {fileID: 1839986175}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -206,7 +206,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 47180236}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1839986176}
+        m_TargetAssemblyTypeName: _Project.Scripts.UI.TitleScene, Assembly-CSharp
+        m_MethodName: BtnCredits_OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &47180236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1339,7 +1351,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2020882072}
-  - {fileID: 47180234}
   m_Father: {fileID: 1839986175}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1616,6 +1627,7 @@ RectTransform:
   - {fileID: 623902623}
   - {fileID: 353339640}
   - {fileID: 1074849097}
+  - {fileID: 47180234}
   - {fileID: 355030115}
   m_Father: {fileID: 0}
   m_RootOrder: 2

@@ -36,7 +36,7 @@ namespace _Project.Scripts.Managers
 
         private void Update()
         {
-            PlayButton.SetActive(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 1);
+            PlayButton.SetActive(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2);
         }
 
         public void BtnCreateRoom_OnClick()

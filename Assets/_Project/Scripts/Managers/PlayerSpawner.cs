@@ -1,6 +1,6 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Project.Scripts.Managers
 {
@@ -28,6 +28,7 @@ namespace _Project.Scripts.Managers
                 // PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.OfflineMode = true;
             }
+            AudioManager.Instance.SwitchAudioSource(1);
         }
 
         public override void OnConnectedToMaster()
@@ -53,6 +54,12 @@ namespace _Project.Scripts.Managers
         {
             Debug.Log("Room Joined.");
             InstantiatePlayerPrefab();
+        }
+
+        public override void OnLeftRoom()
+        {
+            AudioManager.Instance.SwitchAudioSource(0);
+            SceneManager.LoadScene("LobbyScene");
         }
 
         private void InstantiatePlayerPrefab()

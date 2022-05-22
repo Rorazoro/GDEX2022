@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using _Project.Scripts.Managers;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

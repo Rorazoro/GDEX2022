@@ -1018,7 +1018,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Aidan \"Legandary Prinny\" W. \t\tCrawford\r\n\r\nSam \"Rorazoro\" Chancey\r\nRalph
     \"Krycek\" T. Moffat\r\n\r\nJoey DiCamillo @finalpeach_\r\n\r\nDawson Turska\r\n\r\nKevin
-    \"Gryphon\"\nWesley Adams\nTom Allenbaugh"
+    \"Gryphon\"\nWesley Adams\nTom Allenbaugh\nShaders Laboratory"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9981b2e621cea2549ba8c2cd1c16a15c, type: 2}
   m_sharedMaterial: {fileID: -4957939333002512365, guid: 9981b2e621cea2549ba8c2cd1c16a15c, type: 2}

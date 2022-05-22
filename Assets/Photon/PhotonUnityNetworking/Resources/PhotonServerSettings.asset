@@ -44,6 +44,10 @@ MonoBehaviour:
   - RemovePlayerFromPlayerList
   - UpdatePlayerIndex
   - LoadPlayerColor
+  - TriggerGameOver
+  - GameOverRPC
+  - PlayerDiedRPC
+  - PlayerDoneRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

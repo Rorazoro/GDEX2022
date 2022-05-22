@@ -30,7 +30,8 @@ namespace _Project.Scripts.Managers
 
         private void Start()
         {
-            PhotonNetwork.JoinLobby();
+            if (PhotonNetwork.IsConnected)
+                PhotonNetwork.JoinLobby();
         }
 
         private void Update()
@@ -113,6 +114,7 @@ namespace _Project.Scripts.Managers
 
             foreach (var room in roomList)
             {
+                if (room.PlayerCount <= 0) continue;
                 var newRoom = Instantiate(RoomItemPrefab, RoomItemListParent);
                 newRoom.SetRoomInfo(room.Name, room.PlayerCount, room.MaxPlayers);
                 roomItemsList.Add(newRoom);

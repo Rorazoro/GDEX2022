@@ -1,4 +1,4 @@
-using Photon.Pun;
+using _Project.Scripts.Managers;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,9 +7,18 @@ namespace _Project.Scripts.UI
 {
     public class TitleScene : MonoBehaviour
     {
+        public GameObject AudioManagerPrefab;
+
+        private void Start()
+        {
+            if (FindObjectOfType<AudioManager>() == null)
+            {
+                Instantiate(AudioManagerPrefab);
+            }
+        }
+
         public void BtnSingleplayer_OnClick()
         {
-            PhotonNetwork.OfflineMode = true;
             SceneManager.LoadScene("Level1Scene");
         }
 

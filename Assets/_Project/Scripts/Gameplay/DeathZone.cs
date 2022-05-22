@@ -10,7 +10,9 @@ namespace _Project.Scripts.Gameplay
             if (!other.CompareTag("Player")) return;
             
             Debug.Log($"Player died");
-            other.GetComponent<PlayerObject>().TriggerDeath();
+            PlayerObject playerObject = other.GetComponent<PlayerObject>();
+            if (!playerObject.Dead)
+                playerObject.TriggerDeath();
         }
     }
 }
